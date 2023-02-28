@@ -1,5 +1,7 @@
 ﻿using DataAcessLayer.DTO;
 using DataAcessLayer.Entity;
+using DataAcessLayer.FormFile;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;

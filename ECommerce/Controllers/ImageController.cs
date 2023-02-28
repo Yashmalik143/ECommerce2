@@ -2,8 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Web.Http;
 using System.Web;
-using Microsoft.Web.Helpers;
+
 using BusinessLayer.Repository;
+using CloudinaryDotNet.Actions;
+using CloudinaryDotNet;
+using System.Net;
+using DataAcessLayer.FormFile;
 
 namespace ECommerce.Controllers
 {
@@ -11,64 +15,81 @@ namespace ECommerce.Controllers
     [ApiController]
     public class ImageController : ControllerBase
     {
+
+
+
+        public Cloudinary cloudinary;
+        public string ImagePath;
         public static IWebHostEnvironment _webHostEnvironment;
         private readonly Interface1 _interface1;
 
-        public ImageController(IWebHostEnvironment webHostEnvironment,Interface1 interface1)
+        public ImageController(IWebHostEnvironment webHostEnvironment, Interface1 interface1)
         {
             _interface1 = interface1;
-            
+
             _webHostEnvironment = webHostEnvironment;
         }
         [Microsoft.AspNetCore.Mvc.HttpPost]
-         public async Task<string> Post([FromForm] FileUpload fileUpload,int ProductID)
+        public async Task<string> Post([FromForm] FileUpload fileUpload, int ProductID)
         {
-            try
+            //try
+            //{
+            var file = fileUpload.files;
+            var uploadresult = new ImageUploadResult();
+            if (file.Length > 0)
             {
-               
-                if(fileUpload.files.Length > 0 )
+                var cloudinary = new Cloudinary(new Account("dx2q36mer", "175567385587213", "AeKizDqHyHCSLi7W08Uqq23a5zo"));
+                using (var stream = file.OpenReadStream())
                 {
-                    var pth = "";
-                    string path = _webHostEnvironment.WebRootPath + "\\uploads\\";
-                    if(!Directory.Exists(path))
+                    var uploadParams = new ImageUploadParams()
                     {
-                        Directory.CreateDirectory(path);
+                        File = new FileDescription(file.Name, stream),
+                        PublicId = file.Name,
+                        Folder = "Database"
 
-                    }
-                    using (FileStream fileStream = System.IO.File.Create(path + fileUpload.files.FileName))
-                    {
-                        
-                        fileUpload.files.CopyTo(fileStream);
-                        fileStream.Flush();
-                        pth = path+fileUpload.files.FileName;
-                        _interface1.AddImage( fileUpload.files.FileName,pth,ProductID);
-                    //    Console.WriteLine(pth);
-                        return "Upload Done";
-                        
-                    }
+                    };
+
+
+                    uploadresult = cloudinary.Upload(uploadParams);
+                    _interface1.AddImage(fileUpload.files.FileName, uploadresult.Uri.ToString(), ProductID);
                 }
-                else
-                {
-                    return "failed";
-                }
+                return "Upload Done";
             }
-            catch(Exception ex)
+            else
             {
-                return ex.Message;
+                return "failed";
             }
         }
 
+    
         [Microsoft.AspNetCore.Mvc.HttpGet]
         public async Task<IActionResult> Get(int id)
         {
+          
+            
+
             string path = _interface1.GetPath(id);
             if (System.IO.File.Exists(path))
             {
+
                 byte[] b = System.IO.File.ReadAllBytes(path);
-                return File(b,"image/png");
+                var a = File(b, "image/png"); 
+
+                  // CloudinaryRepo cl = new CloudinaryRepo(, 2);
+
+                return File(b, "image/png");
             }
-            return null;
-        }
+            else
+            {
+                var imageData = new WebClient().DownloadData(path);
+
+                
+                return File(imageData, "image/png");
+
+            }
+      
+      
+             }
 
     }
 }

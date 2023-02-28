@@ -14,5 +14,7 @@ namespace DataAcessLayer.DTO
         public string ProductDescription { get; set; }
         public int CategoryID { get; set; }
         //public int UserId { get; set; }
+
+        
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace ECommerce
+﻿using Microsoft.AspNetCore.Http;
+
+namespace DataAcessLayer.FormFile
 {
     public class FileUpload
     {

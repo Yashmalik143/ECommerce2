@@ -8,7 +8,7 @@ using System.Web.Mvc.Filters;
 
 namespace ECommerce;
 
-public class customAuthorize :ActionFilterAttribute, IAuthorizationFilter
+public class customAuthorize :ActionFilterAttribute
 {
     //public Task<HttpResponseMessage> ExecuteAuthorizationFilterAsync(HttpActionContext actionContext, CancellationToken cancellationToken, Func<Task<HttpResponseMessage>> continuation)
     //{

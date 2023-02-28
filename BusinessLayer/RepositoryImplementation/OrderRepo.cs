@@ -1,10 +1,15 @@
 ﻿using BusinessLayer.Repository;
+using CloudinaryDotNet.Actions;
 using DataAcessLayer.DBContext;
 using DataAcessLayer.DTO;
 using DataAcessLayer.Entity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PdfSharpCore;
+using PdfSharpCore.Pdf;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -104,5 +109,26 @@ namespace BusinessLayer.RepositoryImplementation
                 throw;
             }
         }
+        public async Task<OrdersTable>ReturnOrder(int id)
+        {
+            //var obj = _db.Roles.Include(x => x.users)
+            //       .Select(x => new RoleDTO()
+            //       {
+            //           ID = x.ID,
+            //           RoleName = x.RoleName,
+            //           users = x.users.Select(u => new UserRoleDTO()
+            //           {
+            //               ID = u.ID,
+            //               Name = u.Name
+            //           }).ToList(),
+            //       })
+            //       .ToList();
+   
+
+            return _db.OrderTable.Include(x => x.OrderDetails).Include(v => v.Users).FirstOrDefault(x => x.ID == id);
+                
+        }
+
+     
     }
 }
