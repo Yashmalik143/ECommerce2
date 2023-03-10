@@ -4,6 +4,7 @@ using DataAcessLayer.DTO;
 using DataAcessLayer.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -21,9 +22,10 @@ namespace BusinessLayer.RepositoryImplementation
     {
         private readonly EcDbContext _db;
         private readonly IConfiguration _configuration;
-
-        public UsersRepo(EcDbContext db, IConfiguration configuration)
+        private readonly IMemoryCache _memoryCache;
+        public UsersRepo(EcDbContext db, IConfiguration configuration,IMemoryCache memoryCache)
         {
+            _memoryCache = memoryCache;
             _configuration = configuration;
             _db = db;
         }
@@ -50,22 +52,47 @@ namespace BusinessLayer.RepositoryImplementation
             }
         }
 
-        public async Task<IList<UserResponseDTO>> AllUsers()
+        public async Task<List<UserResponseDTO>> AllUsers()
         {
-            var data = await _db.Users.Include(x => x.Roles).Select(x => new UserResponseDTO()
+            var cacheKey = "data";
+
+            if(!_memoryCache.TryGetValue(cacheKey, out List<UserResponseDTO> data)) 
             {
-                ID = x.ID,
-                Name = x.Name,
-                RoleName = x.Roles.RoleName
-            }).ToListAsync();
+
+
+                data = await _db.Users.Include(x => x.Roles).Select(x => new UserResponseDTO()
+                {
+                    ID = x.ID,
+                    Name = x.Name,
+                    RoleName = x.Roles.RoleName
+                }).ToListAsync();
+
+
+                var cacheExpiryOptions = new MemoryCacheEntryOptions
+                { AbsoluteExpiration = DateTime.Now.AddSeconds(30),
+
+                    Priority = CacheItemPriority.High,
+
+                    SlidingExpiration = TimeSpan.FromSeconds(20)
+
+                };
+                _memoryCache.Set(cacheKey, data, cacheExpiryOptions);
+
+            }
 
             return data;
+
+
+
+          
         }
 
         public string Login(int UserId)
         {
             try
             {
+                
+
                 var role = _db.Users.Where(x => x.ID == UserId).Include(x => x.Roles).FirstOrDefault();
 
                 if (role == null)

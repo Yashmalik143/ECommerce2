@@ -18,6 +18,8 @@ builder.Services.AddDatabase(builder.Configuration)
     .AddNewtonJson()
     .Swagger();
 
+builder.Services.AddMemoryCache();
+
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add(new MySampleActionFilter());
@@ -63,11 +65,11 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+///if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI(o => o.SwaggerEndpoint("/swagger/v1/swagger.json","My API v1"));
-}
+//}
 
 //? GLobal Exception handling----------------------------
 app.UseMiddleware<GlobalException>();

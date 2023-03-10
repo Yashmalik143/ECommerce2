@@ -19,11 +19,11 @@ namespace ECommerce.Controllers
 
         [HttpGet("get-all-users")]
         [customAuthorize]
-        public async Task<IActionResult> GetAll()
+        public async Task<IList<UserResponseDTO>> GetAll()
         {
             var res = await _user.AllUsers();
 
-            return Ok(res);
+            return res;
         }
 
         [HttpDelete("delete-user-by-id")]
@@ -35,16 +35,16 @@ namespace ECommerce.Controllers
         }
 
         [HttpPost("add-customer")]
-        public IActionResult AddCustomer(UserDTO obj)
+        public async Task<UserDTO> AddCustomer(UserDTO obj)
         {
-            if (obj == null)
-            {
-                return BadRequest("Name cant be null");
-            }
+            //if (obj == null)
+            //{
+            //    return BadRequest("Name cant be null");
+            //}
             int role = 2;
-            var res = _user.AddUserasync(obj, role);
+            var res = await _user.AddUserasync(obj, role);
 
-            return Ok(res.Result);
+            return res; 
         }
 
         [HttpPost("add-suppiler"), Authorize(Roles = "Admin")]

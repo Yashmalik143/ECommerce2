@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using System.Net.Mail;
+using System.Net;
+using Microsoft.Build.Tasks;
 
 namespace ECommerce.Controllers
 {
@@ -51,7 +54,38 @@ namespace ECommerce.Controllers
         }
 
 
+
+        [HttpGet("SMTP")]
+        public async Task<IActionResult> Get1()
+        {
+
+            string fromMail = "malikyash67@gmail.com";
+            string fromPassword = "cgdrlyrkgiwzaiwb";
+
+            MailMessage message = new MailMessage();
+            message.From = new MailAddress(fromMail);
+            message.Subject = "Test Subject";
+            message.To.Add(new MailAddress("malikyash67@gmail.com"));
+            message.Body = "<html><body> Test Body </body></html>";
+            
+            message.IsBodyHtml = true;
+            System.Net.Mail.Attachment attachment;
+            attachment = new System.Net.Mail.Attachment("hello");
+            message.Attachments.Add(attachment);
+
+            var smtpClient = new SmtpClient("smtp.gmail.com")
+            {
+                Port = 587,
+                Credentials = new NetworkCredential(fromMail, fromPassword),
+                EnableSsl = true,
+            };
+            smtpClient.Send(message);
+
+            return Ok(message);
+        }
+
     }
 
-   
+    //  cgdrlyrkgiwzaiwb
+
 }

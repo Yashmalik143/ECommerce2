@@ -12,7 +12,7 @@ namespace BusinessLayer.Repository
     {
         public Task<UserDTO> AddUserasync(UserDTO obj, int role);
 
-        public Task<IList<UserResponseDTO>> AllUsers();
+        public Task<List<UserResponseDTO>> AllUsers();
 
         string Login(int UserId);
 
