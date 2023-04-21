@@ -25,6 +25,17 @@ builder.Services.AddControllers(options =>
     options.Filters.Add(new MySampleActionFilter());
 })
     ;
+
+string policyName = "CorsPolicy";
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy(name: policyName, builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 builder.Services.AddEndpointsApiExplorer();
@@ -70,11 +81,11 @@ var app = builder.Build();
     app.UseSwagger();
     app.UseSwaggerUI(o => o.SwaggerEndpoint("/swagger/v1/swagger.json","My API v1"));
 //}
-
+app.UseCors(policyName);
 //? GLobal Exception handling----------------------------
 app.UseMiddleware<GlobalException>();
 app.UseHttpsRedirection();
-
+app.UseResponseCaching();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -66,10 +66,16 @@ namespace BusinessLayer.RepositoryImplementation
         {
             try
             {
-                var username = await _db.Users.Where(x => x.ID == id).Select(x => x.Name).FirstOrDefaultAsync();
+                var username = await _db.Users
+                    .Where(x => x.ID == id)
+                    .Select(x => x.Name)
+                    .FirstOrDefaultAsync();
 
-                var user = await _db.OrderTable.Where(x => x.CustomerID == id).Include(X => X.OrderDetails)
-                    .ThenInclude(x => x.Product).Select(x => new UserOrderViewDTO()
+                var user = await _db.OrderTable
+                    .Where(x => x.CustomerID == id)
+                    .Include(X => X.OrderDetails)
+                    .ThenInclude(x => x.Product)
+                    .Select(x => new UserOrderViewDTO()
                     {
                         UserName = username,
                         TotalPrice = x.TotalPrice,

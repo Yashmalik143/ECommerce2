@@ -19,6 +19,7 @@ namespace ECommerce.Controllers
 
         [HttpGet("get-all-users")]
         [customAuthorize]
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any)]
         public async Task<IList<UserResponseDTO>> GetAll()
         {
             var res = await _user.AllUsers();

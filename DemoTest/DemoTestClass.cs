@@ -24,7 +24,7 @@ namespace DemoTest
         {
             controller = new UsersController(userRepository.Object);
         }
-    //    [TestMethod]
+        [TestMethod]
         public void LogInTest()
         {
             //User u1 = new User()
@@ -70,14 +70,15 @@ namespace DemoTest
 
         }
 
-       // [TestMethod]
+        //  [TestMethod]
         public void AddUserTest()
         {
             //Arrange
             UserDTO userDTO = new UserDTO()
             {
                 ID = 3,
-                Name = "Yash"
+                Name = "Yash",
+           
                 
             };
             userRepository.Setup(x => x.AddUserasync(It.IsAny<UserDTO>(), It.IsAny<int>())).ReturnsAsync(userDTO);

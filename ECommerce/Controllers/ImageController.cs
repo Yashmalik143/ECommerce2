@@ -52,6 +52,7 @@ namespace ECommerce.Controllers
 
                     uploadresult = cloudinary.Upload(uploadParams);
                     _interface1.AddImage(fileUpload.files.FileName, uploadresult.Uri.ToString(), ProductID);
+                    var path = uploadresult.Uri;
                 }
 
                 return "Upload Done";

@@ -4,6 +4,7 @@ using DataAcessLayer.DBContext;
 using DataAcessLayer.DTO;
 using DataAcessLayer.Entity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +17,13 @@ namespace BusinessLayer.RepositoryImplementation
     {
         private readonly EcDbContext _db;
         private readonly IMapper _mapper;
+        private readonly IMemoryCache _memoryCache;
 
-        public ProductsRepo(EcDbContext db,IMapper mapper)
+        public ProductsRepo(EcDbContext db,IMapper mapper, IMemoryCache memoryCache)
         {
             _db = db;
             _mapper = mapper;
+            _memoryCache = memoryCache;
         }
 
         public async Task<ProductDTO> AddProductAsync(ProductDTO product, int userId)
@@ -48,20 +51,39 @@ namespace BusinessLayer.RepositoryImplementation
         {
             try
             {
-                var products = await _db.Products.Include(x => x.Category).ToListAsync();
-                List<ProductDTO> Productresult = new List<ProductDTO>();
-                foreach (var i in products)
+                var cacheKey = "Productresult";
+                if (!_memoryCache.TryGetValue(cacheKey, out List<ProductDTO> Productresult))
                 {
-                    ProductDTO pro = new ProductDTO()
+
+                    var products = await _db.Products.Include(x => x.Category).ToListAsync();
+                    Productresult = new List<ProductDTO>();
+                    foreach (var i in products)
                     {
-                        Id = i.Id,
-                        ProductName = i.ProductName,
-                        ProductDescription = i.ProductDescription,
-                        CategoryID = i.CategoryID,
-                        
-                        price = i.price,
+                        ProductDTO pro = new ProductDTO()
+                        {
+                            Id = i.Id,
+                            ProductName = i.ProductName,
+                            ProductDescription = i.ProductDescription,
+                            CategoryID = i.CategoryID,
+
+                            price = i.price,
+                        };
+                        Productresult.Add(pro);
+
+
+                        var cacheExpiryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddSeconds(30),
+
+                        Priority = CacheItemPriority.High,
+
+                        SlidingExpiration = TimeSpan.FromSeconds(20)
+
                     };
-                    Productresult.Add(pro);
+                    _memoryCache.Set(cacheKey, Productresult, cacheExpiryOptions);
+
+                }
+               
                 }
                 return Productresult;
             }

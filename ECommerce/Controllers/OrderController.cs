@@ -53,6 +53,7 @@ namespace ECommerce.Controllers
   
 
         [HttpGet("view-orders"), Authorize]
+        [ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any)]
         public async Task<IActionResult> ViewOrders()
         {
             string id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
