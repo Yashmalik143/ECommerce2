@@ -83,6 +83,7 @@ var app = builder.Build();
 //}
 app.UseCors(policyName);
 //? GLobal Exception handling----------------------------
+//sds
 app.UseMiddleware<GlobalException>();
 app.UseHttpsRedirection();
 app.UseResponseCaching();
