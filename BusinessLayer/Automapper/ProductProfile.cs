@@ -28,7 +28,8 @@ public class ProductProfile : Profile
             .ForMember(dest => dest.CategoryID, opt => opt.MapFrom(src => src.CategoryID))
             .ForMember(dest => dest.user, opt => opt.Ignore())
             .ForMember(dest => dest.OrderDetail, opt => opt.Ignore())
-            .ForMember(dest => dest.Category, opt => opt.Ignore()).ReverseMap()
+            .ForMember(dest => dest.Category, opt => opt.Ignore())
+            .ReverseMap()
             ;
     }
 }

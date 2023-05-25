@@ -13,6 +13,8 @@ namespace DataAcessLayer.DTO
         public int price { get; set; }
         public string ProductDescription { get; set; }
         public int CategoryID { get; set; }
+
+        public string? ImgUrl { get; set; }
         //public int UserId { get; set; }
 
         

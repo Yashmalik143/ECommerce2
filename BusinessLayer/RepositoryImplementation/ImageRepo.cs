@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Repository;
 using DataAcessLayer.DBContext;
 using DataAcessLayer.Entity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,10 +32,15 @@ public class ImageRepo : Interface1
         return str;
     }
 
-    public string GetPath(int Id)
+    public async Task< string> GetPath(int Id)
     {
-        var ab = _db.Images.FirstOrDefault(x => x.ProductId == Id);
-        Console.WriteLine(ab);
-        return ab.url;
-    }
+        try
+        {
+            var ab = await _db.Images.FirstOrDefaultAsync(x => x.ProductId == Id);
+            Console.WriteLine(ab);
+            return ab.url;
+        }
+        catch(Exception ex) { return ex.ToString(); }
+        
+        }
 }

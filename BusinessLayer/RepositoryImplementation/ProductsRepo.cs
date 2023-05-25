@@ -18,9 +18,10 @@ namespace BusinessLayer.RepositoryImplementation
         private readonly EcDbContext _db;
         private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
-
-        public ProductsRepo(EcDbContext db,IMapper mapper, IMemoryCache memoryCache)
+        private readonly Interface1 _image;
+        public ProductsRepo(EcDbContext db,IMapper mapper, IMemoryCache memoryCache ,Interface1 image)
         {
+            _image = image;
             _db = db;
             _mapper = mapper;
             _memoryCache = memoryCache;
@@ -35,9 +36,18 @@ namespace BusinessLayer.RepositoryImplementation
                 pro.CreatedAt = DateTimeOffset.Now;
                 pro.CreatedBy = userId;
 
-               
+
+                Image img = new Image();
+
+                    img.url = product.ImgUrl;
+                    img.name = "Image";
+
+
+                pro.Image = img;
+
                  _db.Products.Add(pro);
                 await _db.SaveChangesAsync();
+          
 
                 return (_mapper.Map<ProductDTO>(pro));
             }
@@ -65,8 +75,8 @@ namespace BusinessLayer.RepositoryImplementation
                             ProductName = i.ProductName,
                             ProductDescription = i.ProductDescription,
                             CategoryID = i.CategoryID,
-
-                            price = i.price,
+                            ImgUrl =  _db.Images.FirstOrDefault(x=> x.ProductId == i.Id).url,
+                        price = i.price,
                         };
                         Productresult.Add(pro);
 

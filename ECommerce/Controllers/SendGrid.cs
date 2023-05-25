@@ -34,7 +34,7 @@ namespace ECommerce.Controllers
 
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress(fromMail, fromName),
+                From = new EmailAddress(fromMail,    fromName),
                 Subject = "Mail by SendGrid",
                 PlainTextContent = "Hello Welcome!!!",
 
@@ -64,6 +64,7 @@ namespace ECommerce.Controllers
 
             MailMessage message = new MailMessage();
             message.From = new MailAddress(fromMail);
+
             message.Subject = "Test Subject";
             message.To.Add(new MailAddress("malikyash67@gmail.com"));
             message.Body = "<html><body> Test Body </body></html>";

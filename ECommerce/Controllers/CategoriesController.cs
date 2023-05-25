@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Repository;
+using DataAcessLayer.DTO;
 using DataAcessLayer.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -19,11 +20,11 @@ namespace ECommerce.Controllers
         }
 
         [HttpPost("add-categories"), Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddCategories(string Name, int Id)
+        public async Task<IActionResult> AddCategories(UserDTO category)
         {
             string Uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             int userId = Convert.ToInt32(Uid);
-            var res = await _categories.CategoryAdd(Name, Id , userId);
+            var res = await _categories.CategoryAdd(category.Name, category.ID , userId);
             return Ok(res);
         }
 
@@ -34,20 +35,20 @@ namespace ECommerce.Controllers
             return Ok(res);
         }
 
-        [HttpDelete("Delete-by-id")]
-        public async Task<IActionResult> DeleteCategories(int id)
+        [HttpDelete("Delete-by-id"), Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteCategories(DeleteDTO d)
         {
-            var delcat = await _categories.DeleteCategories(id);
+            var delcat = await _categories.DeleteCategories(d.id);
             return Ok(delcat);
         }
 
         [HttpPut("update-categories"), Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteCategories(string name, int id)
+        public async Task<IActionResult> DeleteCategories(UserDTO userDTO)
         {
             string Uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             int userId = Convert.ToInt32(Uid);
 
-            var update = await _categories.UpdateCategories(name, id, userId);
+            var update = await _categories.UpdateCategories(userDTO.Name, userDTO.ID, userId);
             return Ok(update);
         }
     }

@@ -65,30 +65,32 @@ namespace ECommerce.Controllers
 
     
         [Microsoft.AspNetCore.Mvc.HttpGet]
-        public async Task<IActionResult> Get(int id)
+        public async Task<string> Get(int id)
         {
           
             
 
-            string path = _interface1.GetPath(id);
-            if (System.IO.File.Exists(path))
-            {
+            var path = await _interface1.GetPath(id);
+            return path;
 
-                byte[] b = System.IO.File.ReadAllBytes(path);
-                var a = File(b, "image/png"); 
+            //if (System.IO.File.Exists(path))
+            //{
 
-                  // CloudinaryRepo cl = new CloudinaryRepo(, 2);
+            //    byte[] b = System.IO.File.ReadAllBytes(path);
+            //    var a = File(b, "image/png"); 
 
-                return File(b, "image/png");
-            }
-            else
-            {
-                var imageData = new WebClient().DownloadData(path);
+            //      // CloudinaryRepo cl = new CloudinaryRepo(, 2);
+
+            //    return File(b, "image/png");
+            //}
+            //else
+            //{
+            //    var imageData = new WebClient().DownloadData(path);
 
                 
-                return File(imageData, "image/png");
+            //    return File(imageData, "image/png");
 
-            }
+            //}
       
       
              }

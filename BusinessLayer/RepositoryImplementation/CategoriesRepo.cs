@@ -1,4 +1,5 @@
-﻿using BusinessLayer.Repository;
+﻿using AutoMapper;
+using BusinessLayer.Repository;
 using DataAcessLayer.DBContext;
 using DataAcessLayer.DTO;
 using DataAcessLayer.Entity;
@@ -10,9 +11,10 @@ namespace BusinessLayer.RepositoryImplementation
     public class CategoriesRepo : ICategories
     {
         private readonly EcDbContext _db;
-
-        public CategoriesRepo(EcDbContext db)
+        private readonly IMapper mapper;
+        public CategoriesRepo(EcDbContext db ,IMapper mapper)
         {
+            this.mapper = mapper;
             _db = db;
         }
 
@@ -57,28 +59,66 @@ namespace BusinessLayer.RepositoryImplementation
             }
         }
 
-        public async Task<IList<Category>> GetAllCategories()
+        public async Task<IList<AllCategoriesDTO>> GetAllCategories()
         {
             try
             {
+                var categoryList = await _db.Categories.Include(
+                    x=>x.Products)
+
+                    .ToListAsync();
+                List<AllCategoriesDTO> list = new List<AllCategoriesDTO>();
+
+                foreach (var category in categoryList)
+                {
+                    AllCategoriesDTO a = new AllCategoriesDTO();
+
+                    a.ID = category.Id;
+                    a.categoryName = category.CategoryName;
+
+                    List<ProductDTO> prodList = new List<ProductDTO>();
+                    foreach (var product in category.Products)
+                    {
+                        prodList.Add(new ProductDTO
+                        {
+                            Id = product.Id,
+                            ProductName = product.ProductName,
+                            ProductDescription = product.ProductDescription,
+                            price = product.price,
+                            ImgUrl = _db.Images.FirstOrDefault(x=>x.ProductId == product.Id).url
+                           
+                            
+                        });
+
+                    }
+
+                    a.CatProduct = prodList;
+                    list.Add(a);
+
+                }
+
                 //var cat = await _db.Products.Include(x => x.Category)
                 //    .Select(x => new AllCategoriesDTO
                 //    {
                 //        categoryName = x.Category.CategoryName,
                 //        ID = x.CategoryID,
-                //        CatProduct = new AllCategoryProductDTO()
+                //        CatProduct = new ProductDTO()
                 //        {
+                //            Id = x.Id,
+                //            ProductName= x.ProductName,
                 //            price = x.price,
-                //            ProductAddedByName = x.ProductName,
-                //            productName = x.ProductName,
-                //            ProductId = x.Id,
+                           
+                //            ProductDescription = x.ProductDescription,
+                //            ImgUrl = x.Image.url,
                 //        }
                 //    }).ToListAsync();
+
+                
+                return (list);
+
+                //var cat = await _db.Categories.Include(x => x.Products).ToListAsync();
+
                 //return (cat);
-
-                var cat = await _db.Categories.Include(x => x.Products).ToListAsync();
-
-                return (cat);
             }
             catch (Exception)
             {

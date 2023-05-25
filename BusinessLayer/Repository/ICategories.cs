@@ -12,7 +12,7 @@ namespace BusinessLayer.Repository
     {
         public Task<Category> CategoryAdd(string name, int id , int userId);
 
-        public Task<IList<Category>> GetAllCategories();
+        public Task<IList<AllCategoriesDTO>> GetAllCategories();
 
         public Task<Category> DeleteCategories(int id);
 

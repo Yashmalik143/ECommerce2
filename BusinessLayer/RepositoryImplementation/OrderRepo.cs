@@ -77,12 +77,13 @@ namespace BusinessLayer.RepositoryImplementation
                     .ThenInclude(x => x.Product)
                     .Select(x => new UserOrderViewDTO()
                     {
-                        UserName = username,
+                        OrderID = x.ID,
                         TotalPrice = x.TotalPrice,
-                        UserId = id,
+              
                         Productdet = x.OrderDetails.Select(x => new UserOrderProductsViewDTO()
                         {
-                            OrderID = x.OrderId,
+                            
+                            imgUrl = _db.Images.FirstOrDefault(y=> y.ProductId ==  x.Product.Id).url, 
                             ProductName = x.Product.ProductName,
                             price = x.Product.price,
                             ProductDesc = x.Product.ProductDescription,

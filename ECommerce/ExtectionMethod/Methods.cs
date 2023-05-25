@@ -22,7 +22,7 @@ namespace ECommerce.ExtectionMethod
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<EcDbContext>(options => options
-            .UseSqlServer(configuration.GetConnectionString("Smarter")
+            .UseSqlServer(configuration.GetConnectionString("DefaultConnection")
             , dbOpt => dbOpt.MigrationsAssembly(Assembly.GetExecutingAssembly().GetName().Name))
 );
 

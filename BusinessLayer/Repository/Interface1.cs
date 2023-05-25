@@ -10,6 +10,6 @@ public interface Interface1
 {
     public string AddImage(string name, string url,int ProductID);
 
-    public string GetPath(int id);
+    public Task<string> GetPath(int id);
 
 }

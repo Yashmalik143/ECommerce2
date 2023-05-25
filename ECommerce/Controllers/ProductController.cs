@@ -21,7 +21,7 @@ namespace ECommerce.Controllers
             _product = product;
         }
 
-        [HttpPost("AddingProducts")]
+        [HttpPost("AddingProducts")] 
       //  [Authorize(Roles = "Supplier,Admin")]
         public async Task<IActionResult> AddProducts(ProductDTO obj)
         {

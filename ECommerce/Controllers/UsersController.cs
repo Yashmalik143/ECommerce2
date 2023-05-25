@@ -55,20 +55,20 @@ namespace ECommerce.Controllers
             {
                 return BadRequest("Name cant be null");
             }
-            int role = 3;
+            int role = 2;
             var res = _user.AddUserasync(obj, role);
 
             return Ok(res.Result);
         }
 
         [HttpPost("login")]
-        public IActionResult Login(int UserId)
+        public IActionResult Login(UserDTO userDTO)
         {
-            if (UserId == null)
+            if (userDTO.ID == null)
             {
                 return BadRequest("UserId can't be blank");
             }
-            var res = _user.Login(UserId);
+            var res = _user.Login(userDTO.ID);
             return Ok(res);
         }
     }

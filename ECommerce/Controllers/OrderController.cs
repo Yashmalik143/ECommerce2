@@ -39,7 +39,7 @@ namespace ECommerce.Controllers
 
         }
 
-        [HttpPost("order-products"), Authorize]
+        [HttpPost("order-products"),Authorize]
         public async Task<IActionResult> OrderProduct(OrderDTO obj)
         {
             string id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

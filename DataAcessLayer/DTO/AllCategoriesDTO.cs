@@ -11,6 +11,6 @@ namespace DataAcessLayer.DTO
         public int ID { get; set; }
         public string categoryName { get; set; }
 
-        public AllCategoryProductDTO CatProduct { get; set; }
+        public List<ProductDTO> CatProduct { get; set; }
     }
 }
